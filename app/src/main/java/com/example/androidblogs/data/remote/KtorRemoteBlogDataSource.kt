@@ -1,6 +1,6 @@
 package com.example.androidblogs.data.remote
 
-import com.example.androidblogs.data.Constant.GITHUB_URL
+import com.example.androidblogs.data.util.Constant.GITHUB_URL
 import com.example.androidblogs.data.remote.dto.BlogDto
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body

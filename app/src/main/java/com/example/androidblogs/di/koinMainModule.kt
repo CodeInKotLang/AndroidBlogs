@@ -1,5 +1,7 @@
 package com.example.androidblogs.di
 
+import com.example.androidblogs.data.local.BlogDatabase
+import com.example.androidblogs.data.local.DatabaseFactory
 import com.example.androidblogs.data.remote.HttpClientFactory
 import com.example.androidblogs.data.remote.KtorRemoteBlogDataSource
 import com.example.androidblogs.data.remote.RemoteBlogDataSource
@@ -13,6 +15,9 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 
 val koinMainModule = module {
+
+    single { DatabaseFactory.create(get()) }
+    single { get<BlogDatabase>().blogDao() }
 
     single { HttpClientFactory.create(OkHttp.create()) }
 
