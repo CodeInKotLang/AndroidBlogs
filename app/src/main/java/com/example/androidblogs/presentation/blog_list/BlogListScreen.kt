@@ -1,6 +1,7 @@
 package com.example.androidblogs.presentation.blog_list
 
 import android.widget.Toast
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -27,7 +28,8 @@ import kotlinx.coroutines.flow.emptyFlow
 fun BlogListScreen(
     modifier: Modifier = Modifier,
     state: BlogListState,
-    event: Flow<BlogListEvent>
+    event: Flow<BlogListEvent>,
+    onBlogCardClick: (Int) -> Unit
 ) {
 
     val context = LocalContext.current
@@ -53,6 +55,8 @@ fun BlogListScreen(
         ) {
             items(state.blogs) { blog ->
                 BlogCard(
+                    modifier = Modifier
+                        .clickable { onBlogCardClick(blog.id) },
                     blog = blog
                 )
             }
@@ -87,6 +91,7 @@ private fun PreviewBlogListScreen() {
     )
     BlogListScreen(
         state = BlogListState(blogs = dummyList),
-        event = emptyFlow()
+        event = emptyFlow(),
+        onBlogCardClick = {}
     )
 }
