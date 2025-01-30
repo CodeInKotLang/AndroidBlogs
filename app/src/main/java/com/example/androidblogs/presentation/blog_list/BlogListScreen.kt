@@ -1,5 +1,6 @@
 package com.example.androidblogs.presentation.blog_list
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -12,17 +13,34 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import com.example.androidblogs.domain.model.Blog
 import com.example.androidblogs.presentation.blog_list.component.BlogCard
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 
 @Composable
 fun BlogListScreen(
     modifier: Modifier = Modifier,
-    state: BlogListState
+    state: BlogListState,
+    event: Flow<BlogListEvent>
 ) {
+
+    val context = LocalContext.current
+    LaunchedEffect(key1 = Unit) {
+        event.collect { event ->
+            when(event) {
+                is BlogListEvent.Error -> {
+                    Toast.makeText(context, event.error, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
     Column(
         modifier = modifier.fillMaxSize()
     ) {
@@ -67,5 +85,8 @@ private fun PreviewBlogListScreen() {
             content = null
         )
     )
-    BlogListScreen(state = BlogListState(blogs = dummyList))
+    BlogListScreen(
+        state = BlogListState(blogs = dummyList),
+        event = emptyFlow()
+    )
 }

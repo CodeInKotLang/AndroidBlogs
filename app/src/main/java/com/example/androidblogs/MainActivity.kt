@@ -29,7 +29,8 @@ class MainActivity : ComponentActivity() {
                 ) { innerPadding ->
                     BlogListScreen(
                         modifier = Modifier.padding(innerPadding),
-                        state = state
+                        state = state,
+                        event = viewModel.events
                     )
                 }
             }
