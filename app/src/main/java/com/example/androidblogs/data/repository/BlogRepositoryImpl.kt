@@ -1,6 +1,8 @@
 package com.example.androidblogs.data.repository
 
 import com.example.androidblogs.data.local.BlogDao
+import com.example.androidblogs.data.local.entity.BlogContentEntity
+import com.example.androidblogs.data.mapper.toBlog
 import com.example.androidblogs.data.mapper.toBlogEntityList
 import com.example.androidblogs.data.mapper.toBlogList
 import com.example.androidblogs.data.remote.RemoteBlogDataSource
@@ -39,4 +41,39 @@ class BlogRepositoryImpl(
             }
         }
     }
+
+    override suspend fun getBlogById(blogId: Int): Result<Blog> {
+        val blogEntity = localBlogDataSource.getBlogById(blogId)
+            ?: return  Result.Error(message = "Blog not found in local database.")
+        val contentResult = remoteBlogDataSource.fetchBlogContent(blogEntity.contentUrl)
+        return when(contentResult) {
+            is Result.Success -> {
+                val blogContentEntity = BlogContentEntity(
+                    blogId = blogId,
+                    content = contentResult.data ?: ""
+                )
+                localBlogDataSource.insertBlogContent(blogContentEntity)
+                Result.Success(data = blogEntity.toBlog(contentResult.data))
+            }
+            is Result.Error -> {
+                val contentEntity = localBlogDataSource.getBlogContent(blogId)
+                if (contentEntity != null) {
+                    Result.Success(data = blogEntity.toBlog(contentEntity.content))
+                } else {
+                    Result.Error(message = "Failed to fetch blog content. ${contentResult.message}")
+                }
+            }
+        }
+    }
 }
+
+
+
+
+
+
+
+
+
+
+

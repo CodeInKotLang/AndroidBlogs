@@ -7,6 +7,7 @@ import com.example.androidblogs.data.remote.KtorRemoteBlogDataSource
 import com.example.androidblogs.data.remote.RemoteBlogDataSource
 import com.example.androidblogs.data.repository.BlogRepositoryImpl
 import com.example.androidblogs.domain.repository.BlogRepository
+import com.example.androidblogs.presentation.blog_content.BlogContentViewModel
 import com.example.androidblogs.presentation.blog_list.BlogListViewModel
 import io.ktor.client.engine.okhttp.OkHttp
 import org.koin.core.module.dsl.singleOf
@@ -25,4 +26,5 @@ val koinMainModule = module {
     singleOf(::BlogRepositoryImpl).bind<BlogRepository>()
 
     viewModelOf(::BlogListViewModel)
+    viewModelOf(::BlogContentViewModel)
 }

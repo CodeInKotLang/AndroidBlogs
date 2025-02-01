@@ -6,6 +6,7 @@ import com.example.androidblogs.domain.util.Result
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
+import io.ktor.client.statement.bodyAsText
 import java.net.UnknownHostException
 
 class KtorRemoteBlogDataSource(
@@ -25,4 +26,16 @@ class KtorRemoteBlogDataSource(
         }
     }
 
+    override suspend fun fetchBlogContent(url: String): Result<String> {
+        return try {
+            val response = httpClient.get(urlString = url)
+            val blogContent = response.bodyAsText()
+            Result.Success(blogContent)
+        } catch (e: UnknownHostException) {
+            Result.Error(message = "Network error. Please verify your internet connection.")
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Result.Error(message = "Something went wrong. ${e.message}")
+        }
+    }
 }

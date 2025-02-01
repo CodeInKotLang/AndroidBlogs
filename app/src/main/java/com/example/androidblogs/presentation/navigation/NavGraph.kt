@@ -8,6 +8,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.androidblogs.presentation.blog_content.BlogContentScreen
+import com.example.androidblogs.presentation.blog_content.BlogContentViewModel
 import com.example.androidblogs.presentation.blog_list.BlogListScreen
 import com.example.androidblogs.presentation.blog_list.BlogListViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -34,8 +35,12 @@ fun NavGraph(
             )
         }
         composable<Route.BlogContentScreen> {
+            val viewModel = koinViewModel<BlogContentViewModel>()
+            val state by viewModel.state.collectAsStateWithLifecycle()
             BlogContentScreen(
-                onBackClick = { navController.navigateUp() }
+                state = state,
+                onBackClick = { navController.navigateUp() },
+                onAction = viewModel::onAction
             )
         }
     }
