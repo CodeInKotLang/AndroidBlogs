@@ -33,12 +33,14 @@ class BlogListViewModel(
 
     private fun getAllBlogs() {
         viewModelScope.launch {
+            _state.update { it.copy(isLoading = true) }
             when (val result = blogRepository.getAllBlogs()) {
                 is Result.Success -> {
                     _state.update {
                         it.copy(
                             blogs = result.data.orEmpty().reversed(),
-                            errorMessage = null
+                            errorMessage = null,
+                            isLoading = false
                         )
                     }
                 }
@@ -47,7 +49,8 @@ class BlogListViewModel(
                     _state.update {
                         it.copy(
                             blogs = result.data.orEmpty().reversed(),
-                            errorMessage = result.message
+                            errorMessage = result.message,
+                            isLoading = false
                         )
                     }
                     result.message?.let {
